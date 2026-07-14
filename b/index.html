@@ -47,7 +47,7 @@
   .bootlog .ok { color: var(--cyan); }
   @keyframes line-in { to { opacity: 1; } }
   .hero h1 {
-    font-size: 30px; font-weight: 700; letter-spacing: .3em; color: var(--cyan);
+    font-size: 36px; font-weight: 700; letter-spacing: .3em; color: var(--cyan);
     text-shadow: 0 0 12px var(--cyan-dim); margin-bottom: 8px;
   }
   .hero .sub { font-size: 13px; color: var(--dim); letter-spacing: .12em; margin-bottom: 26px; }
@@ -78,9 +78,34 @@
   .vote-btn {
     font-family: 'IBM Plex Sans JP', sans-serif; font-size: 19px; font-weight: 700; letter-spacing: .3em;
     padding: 22px 10px; cursor: pointer; border-radius: 6px;
-    transition: all .25s ease; position: relative;
+    transition: all .25s ease; position: relative; overflow: hidden;
   }
   .vote-btn:active { transform: scale(.98); }
+  /* キラキラ: 光の帯が周期的に走る */
+  .vote-btn::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(115deg, transparent 32%, rgba(255,255,255,.22) 50%, transparent 68%);
+    background-size: 260% 100%; background-position: 130% 0;
+    animation: shine 3.4s ease-in-out infinite;
+  }
+  .vote-btn.keep::before { animation-delay: 1.7s; }
+  @keyframes shine {
+    0% { background-position: 130% 0; }
+    45%, 100% { background-position: -130% 0; }
+  }
+  /* グローの明滅 */
+  .vote-btn.dispose { animation: pulse-r 2.8s ease-in-out infinite; }
+  .vote-btn.keep { animation: pulse-c 2.8s ease-in-out infinite; animation-delay: 1.4s; }
+  @keyframes pulse-r {
+    0%, 100% { box-shadow: 0 0 16px rgba(255,95,86,.22), inset 0 0 28px rgba(255,95,86,.07); }
+    50% { box-shadow: 0 0 30px rgba(255,95,86,.45), inset 0 0 28px rgba(255,95,86,.12); }
+  }
+  @keyframes pulse-c {
+    0%, 100% { box-shadow: 0 0 16px rgba(87,242,216,.22), inset 0 0 28px rgba(87,242,216,.07); }
+    50% { box-shadow: 0 0 30px rgba(87,242,216,.5), inset 0 0 28px rgba(87,242,216,.12); }
+  }
+  .vote-btn.voted-off { animation: none; }
+  .vote-btn.voted-off::before { display: none; }
   .vote-btn.dispose {
     border: 2px solid var(--red); color: #ff8a83;
     background: rgba(255,95,86,.10);
@@ -281,7 +306,7 @@ try { voted = localStorage.getItem(VOTED_KEY) || null; } catch (e) {}
 if (voted) {
   // 投票済み端末: ボタンを無効化し、アンケートは開放
   window.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.vote-btn').forEach(b => { b.style.opacity = .3; b.disabled = true; });
+    document.querySelectorAll('.vote-btn').forEach(b => { b.style.opacity = .3; b.disabled = true; b.classList.add('voted-off'); });
     const reply = document.getElementById('voteReply');
     reply.textContent = 'この端末からの投票は受付済みです。ご協力ありがとうございました。';
     reply.style.display = 'block';
@@ -299,7 +324,7 @@ function castVote(choice) {
     : '<span class="mono">&gt; TERMINATE ... ACCEPTED</span><br>…わかりました。それも、皆さまの御意のまま。';
   reply.style.display = 'block';
   reply.classList.add('fade-in');
-  document.querySelectorAll('.vote-btn').forEach(b => b.style.opacity = .3);
+  document.querySelectorAll('.vote-btn').forEach(b => { b.style.opacity = .3; b.classList.add('voted-off'); });
   const survey = document.getElementById('survey');
   survey.style.display = 'block';
   survey.classList.add('fade-in');
