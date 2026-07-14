@@ -194,8 +194,29 @@
 </footer>
 
 <script>
-// ===== 本番では Google フォームの formResponse URL に差し替え =====
-function sendToBackend(payload) { console.log('SUBMIT', payload); }
+// ===== Google フォーム連携(本番) =====
+const VOTE_FORM = 'https://docs.google.com/forms/d/e/1FAIpQLSdHHc-gOJ4ZtQJ831psgmRYanZVGqK3X50bu9HkCMh4V8qAiQ/formResponse';
+const SURVEY_FORM = 'https://docs.google.com/forms/d/e/1FAIpQLSf2QFnyUgjWnDDxyXYoaS6VkEx886gwigigXcGy437SVEN5Tg/formResponse';
+function postForm(url, data) {
+  const body = new URLSearchParams(data).toString();
+  fetch(url, {
+    method: 'POST', mode: 'no-cors', keepalive: true,
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    body
+  }).catch(() => {});
+}
+function voteLabel(v) { return v === 'keep' ? '処分しない' : v === 'dispose' ? '処分する' : ''; }
+function sendToBackend(payload) {
+  if (payload.type === 'vote') {
+    postForm(VOTE_FORM, {'entry.840708085': voteLabel(payload.choice)});
+  } else if (payload.type === 'survey') {
+    postForm(SURVEY_FORM, {
+      'entry.372688590': payload.impression || '',
+      'entry.645692214': payload.age || '',
+      'entry.1540152669': voteLabel(payload.vote)
+    });
+  }
+}
 
 let voted = null;
 function castVote(choice) {
