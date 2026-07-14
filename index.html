@@ -73,7 +73,8 @@
 
   /* Vote */
   .judgment-head { text-align: center; font-size: 16px; color: var(--red); letter-spacing: .35em; margin: 46px 0 10px; text-shadow: 0 0 10px rgba(255,95,86,.5); }
-  .judgment-sub { text-align: center; font-size: 17px; font-weight: 500; color: var(--text); letter-spacing: .12em; margin-bottom: 26px; }
+  .judgment-sub { text-align: center; font-size: 17px; font-weight: 500; color: var(--text); letter-spacing: .12em; margin-bottom: 26px; min-height: 1.9em; }
+  .type-cursor { color: var(--cyan); font-weight: 400; }
   .vote-buttons { display: flex; flex-direction: column; gap: 16px; }
   .vote-btn {
     font-family: 'IBM Plex Sans JP', sans-serif; font-size: 19px; font-weight: 700; letter-spacing: .3em;
@@ -207,7 +208,7 @@
   <!-- VOTE -->
   <section id="vote">
     <p class="judgment-head mono">— JUDGMENT REQUIRED —</p>
-    <p class="judgment-sub">どうぞ、投票してください。</p>
+    <p class="judgment-sub"><span id="typeTarget"></span><span class="type-cursor blink">▊</span></p>
     <div class="vote-buttons">
       <button class="vote-btn dispose" onclick="castVote('dispose')">処分する</button>
       <button class="vote-btn keep" onclick="castVote('keep')">処分しない</button>
@@ -298,6 +299,25 @@ function sendToBackend(payload) {
     });
   }
 }
+
+// 「どうぞ、投票してください。」タイプライター演出
+(() => {
+  const target = document.getElementById('typeTarget');
+  const text = 'どうぞ、投票してください。';
+  let started = false;
+  const io = new IntersectionObserver((entries) => {
+    if (started || !entries.some(e => e.isIntersecting)) return;
+    started = true;
+    io.disconnect();
+    let i = 0;
+    const tick = () => {
+      target.textContent = text.slice(0, ++i);
+      if (i < text.length) setTimeout(tick, 95);
+    };
+    setTimeout(tick, 350);
+  }, { threshold: 0.6 });
+  io.observe(document.querySelector('.judgment-sub'));
+})();
 
 // 端末単位の再投票ロック(リロード対策)
 const VOTED_KEY = 'natsuyume_voted';
