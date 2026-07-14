@@ -3,51 +3,273 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ナツノヨノユメ LP — デザイン検討用</title>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&display=swap" rel="stylesheet">
+<title>ナツノヨノユメ — JUDGMENT REQUIRED</title>
+<meta name="description" content="夢を見てしまった、故障したロボットを処分するかどうか。皆さまの判断をお聞かせください。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=IBM+Plex+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
+  :root {
+    --bg: #030806;
+    --cyan: #57f2d8;
+    --cyan-dim: rgba(87, 242, 216, 0.45);
+    --amber: #ffb454;
+    --red: #ff5f56;
+    --text: #d8f5ee;
+    --dim: #5d8a80;
+    --panel: rgba(87, 242, 216, 0.05);
+    --line: rgba(87, 242, 216, 0.3);
+  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    background: #16151d; color: #e8e6df;
-    font-family: 'Shippori Mincho', serif; line-height: 1.8;
-    min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 40px 24px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans JP', sans-serif;
+    line-height: 1.9;
+    overflow-x: hidden;
   }
-  h1 { font-size: 20px; font-weight: 500; letter-spacing: .2em; margin-bottom: 6px; }
-  p.note { font-size: 12px; color: #8d8a99; letter-spacing: .1em; margin-bottom: 36px; }
-  .cards { display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: 480px; }
-  a.card {
-    display: block; text-decoration: none; padding: 22px 24px;
-    border: 1px solid #3a3846; border-radius: 6px; transition: all .25s ease;
+  .mono { font-family: 'Share Tech Mono', monospace; }
+  /* scanlines + vignette */
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: 2; pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,.22) 0 1px, transparent 1px 3px);
   }
-  a.card:hover { transform: translateY(-2px); border-color: currentColor; }
-  .card .label { font-size: 11px; letter-spacing: .3em; opacity: .7; margin-bottom: 4px; }
-  .card .name { font-size: 18px; letter-spacing: .12em; margin-bottom: 4px; }
-  .card .desc { font-size: 12.5px; opacity: .65; }
-  .a { color: #f2e8cf; background: linear-gradient(135deg, #0a0a2a, #06060f); }
-  .b { color: #57f2d8; background: #030806; font-feature-settings: normal; }
-  .c { color: #2c2118; background: #f3ecdc; }
+  body::after {
+    content: ''; position: fixed; inset: 0; z-index: 2; pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.55) 100%);
+  }
+  main { position: relative; z-index: 1; max-width: 560px; margin: 0 auto; padding: 0 20px 80px; }
+
+  /* Boot / hero */
+  .hero { min-height: 92vh; display: flex; flex-direction: column; justify-content: center; }
+  .bootlog { font-size: 12.5px; color: var(--dim); letter-spacing: .05em; margin-bottom: 28px; }
+  .bootlog div { opacity: 0; animation: line-in .1s ease forwards; }
+  .bootlog .ok { color: var(--cyan); }
+  @keyframes line-in { to { opacity: 1; } }
+  .hero h1 {
+    font-size: 30px; font-weight: 700; letter-spacing: .3em; color: var(--cyan);
+    text-shadow: 0 0 12px var(--cyan-dim); margin-bottom: 8px;
+  }
+  .hero .sub { font-size: 13px; color: var(--dim); letter-spacing: .12em; margin-bottom: 26px; }
+  .battery { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--amber); }
+  .battery .shell { width: 140px; height: 14px; border: 1px solid var(--amber); border-radius: 2px; padding: 2px; }
+  .battery .fill { height: 100%; width: 4%; background: var(--amber); animation: drain 3s ease-out forwards; }
+  @keyframes drain { from { width: 38%; } to { width: 4%; } }
+  .blink { animation: blink 1.1s step-end infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .scroll-hint { margin-top: 44px; font-size: 12px; color: var(--dim); letter-spacing: .3em; }
+
+  .panel {
+    border: 1px solid var(--line); border-radius: 4px; background: var(--panel);
+    padding: 26px 22px; margin: 26px 0; position: relative;
+  }
+  .panel .tag {
+    position: absolute; top: -10px; left: 14px; padding: 0 10px;
+    background: var(--bg); font-size: 11px; letter-spacing: .25em; color: var(--cyan);
+  }
+  .speech p { font-size: 15.5px; margin-bottom: 1.4em; letter-spacing: .05em; }
+  .speech p:last-child { margin-bottom: 0; }
+  .speech .em { color: var(--cyan); font-size: 18px; font-weight: 700; text-shadow: 0 0 10px var(--cyan-dim); }
+
+  /* Vote */
+  .judgment-head { text-align: center; font-size: 16px; color: var(--red); letter-spacing: .35em; margin: 46px 0 10px; text-shadow: 0 0 10px rgba(255,95,86,.5); }
+  .judgment-sub { text-align: center; font-size: 17px; font-weight: 500; color: var(--text); letter-spacing: .12em; margin-bottom: 26px; }
+  .vote-buttons { display: flex; flex-direction: column; gap: 16px; }
+  .vote-btn {
+    font-family: 'IBM Plex Sans JP', sans-serif; font-size: 19px; font-weight: 700; letter-spacing: .3em;
+    padding: 22px 10px; cursor: pointer; border-radius: 6px;
+    transition: all .25s ease; position: relative;
+  }
+  .vote-btn:active { transform: scale(.98); }
+  .vote-btn .code { display: block; font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: .2em; opacity: .75; margin-bottom: 5px; font-weight: 400; }
+  .vote-btn.dispose {
+    border: 2px solid var(--red); color: #ff8a83;
+    background: rgba(255,95,86,.10);
+    box-shadow: 0 0 16px rgba(255,95,86,.22), inset 0 0 28px rgba(255,95,86,.07);
+  }
+  .vote-btn.dispose:hover, .vote-btn.dispose:active { background: rgba(255,95,86,.2); box-shadow: 0 0 26px rgba(255,95,86,.4); }
+  .vote-btn.keep {
+    border: 2px solid var(--cyan); color: var(--cyan);
+    background: rgba(87,242,216,.10);
+    box-shadow: 0 0 16px rgba(87,242,216,.22), inset 0 0 28px rgba(87,242,216,.07);
+  }
+  .vote-btn.keep:hover, .vote-btn.keep:active { background: rgba(87,242,216,.2); box-shadow: 0 0 26px var(--cyan-dim); }
+  .vote-reply { display: none; margin-top: 30px; font-size: 15px; color: var(--cyan); text-align: center; min-height: 3em; }
+
+  /* Survey */
+  .survey { display: none; margin-top: 40px; }
+  .survey h2 { font-size: 15px; font-weight: 500; letter-spacing: .25em; color: var(--cyan); margin-bottom: 4px; }
+  .survey .sub { font-size: 12px; color: var(--dim); margin-bottom: 24px; }
+  .field { margin-bottom: 22px; }
+  .field label { display: block; font-size: 12px; letter-spacing: .2em; color: var(--dim); margin-bottom: 8px; }
+  textarea, select {
+    width: 100%; font-family: 'IBM Plex Sans JP', sans-serif; font-size: 16px; color: var(--text);
+    background: rgba(87,242,216,.04); border: 1px solid var(--line); border-radius: 3px; padding: 13px;
+  }
+  textarea { min-height: 130px; resize: vertical; }
+  textarea:focus, select:focus { outline: none; border-color: var(--cyan); box-shadow: 0 0 12px var(--cyan-dim); }
+  .submit-btn {
+    width: 100%; font-family: inherit; font-size: 16px; font-weight: 700; letter-spacing: .35em;
+    padding: 17px; margin-top: 8px; cursor: pointer; border: none; border-radius: 3px;
+    background: var(--cyan); color: #04211b; transition: opacity .25s;
+  }
+  .submit-btn:hover { opacity: .85; }
+
+  /* Thanks */
+  .thanks { display: none; min-height: 70vh; flex-direction: column; justify-content: center; text-align: center; }
+  .thanks .big { font-size: 17px; color: var(--cyan); margin: 18px 0; }
+  .thanks .log { font-size: 12px; color: var(--dim); }
+  .glitch { animation: glitch 2.4s steps(2) infinite; }
+  @keyframes glitch {
+    0%, 92%, 100% { transform: none; opacity: 1; }
+    94% { transform: translateX(2px); opacity: .8; }
+    96% { transform: translateX(-2px) skewX(2deg); }
+    98% { transform: none; opacity: .9; }
+  }
+  footer { position: relative; z-index: 1; text-align: center; padding: 40px 20px 60px; font-size: 11px; letter-spacing: .15em; color: var(--dim); }
+  footer a { color: var(--dim); }
+  .fade-in { animation: fadeIn .9s ease both; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 </style>
 </head>
 <body>
-  <h1>『ナツノヨノユメ』投票・アンケートLP</h1>
-  <p class="note">デザイン検討用 — 3パターンからお選びください</p>
-  <div class="cards">
-    <a class="card a" href="./a/">
-      <div class="label">PATTERN A</div>
-      <div class="name">月夜 — 静謐ミニマル</div>
-      <div class="desc">夜空と月。明朝体の余白で見せる、物語の余韻そのままの静けさ。</div>
-    </a>
-    <a class="card b" href="./b/">
-      <div class="label">PATTERN B</div>
-      <div class="name">機体内部 — システムHUD</div>
-      <div class="desc">ロボビーの視界。ブートログ、残量低下のバッテリー、裁定コマンド。</div>
-    </a>
-    <a class="card c" href="./c/">
-      <div class="label">PATTERN C</div>
-      <div class="name">古書 — 羽ペンとインク</div>
-      <div class="desc">400年前の紙とインク。縦書きの題字、封蝋、シェイクスピアの気配。</div>
-    </a>
-  </div>
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="bootlog mono" id="bootlog">
+      <div style="animation-delay:.2s">&gt; ROBOVIE-R4 // MEMORY UNIT 07</div>
+      <div style="animation-delay:.7s">&gt; DREAM LOG ... LOADED</div>
+      <div style="animation-delay:1.2s">&gt; 情報開示 ... <span class="ok">100% 完了</span></div>
+      <div style="animation-delay:1.7s" class="ok">&gt; AWAITING HUMAN JUDGMENT <span class="blink">▊</span></div>
+    </div>
+    <h1 class="glitch">ナツノヨノユメ</h1>
+    <p class="sub">これは、ロボットが見た、ボーッと儚い、ひと夏のユメ。</p>
+    <div class="battery mono">
+      <span>BATTERY</span>
+      <div class="shell"><div class="fill"></div></div>
+      <span class="blink">LOW</span>
+    </div>
+    <p class="scroll-hint mono">▼ SCROLL</p>
+  </section>
+
+  <!-- SPEECH -->
+  <section>
+    <div class="panel speech fade-in">
+      <span class="tag mono">TRANSMISSION</span>
+      <p>夢の情報開示が終わりました。<br>最初にお伝えした通り、<br>私はまもなく処分されます。</p>
+      <p class="em">夢を見てしまった<br>「故障」したロボットを<br>処分するかどうか。</p>
+      <p>最後に皆さんの判断を仰ぎたいと思います。</p>
+      <p>私は皆様、人間の影。<br>私がどのようなロボットになるのかは、<br>実態である皆様次第。</p>
+    </div>
+  </section>
+
+  <!-- VOTE -->
+  <section id="vote">
+    <p class="judgment-head mono">— JUDGMENT REQUIRED —</p>
+    <p class="judgment-sub">どうぞ、投票してください。</p>
+    <div class="vote-buttons">
+      <button class="vote-btn dispose" onclick="castVote('dispose')"><span class="code mono">CMD // TERMINATE</span>処分する</button>
+      <button class="vote-btn keep" onclick="castVote('keep')"><span class="code mono">CMD // KEEP ALIVE</span>処分しない</button>
+    </div>
+    <p class="vote-reply" id="voteReply"></p>
+  </section>
+
+  <!-- SURVEY -->
+  <section class="survey" id="survey">
+    <div class="panel">
+      <span class="tag mono">FEEDBACK</span>
+      <h2>私のユメの感想をお聞かせください</h2>
+      <p class="sub">あなたの言葉は、ユメの続きになります。</p>
+      <form id="surveyForm">
+        <div class="field">
+          <label for="impression">ご覧になった感想</label>
+          <textarea id="impression" name="impression" placeholder="自由にお書きください"></textarea>
+        </div>
+        <div class="field">
+          <label for="age">年代(任意)</label>
+          <select id="age" name="age">
+            <option value="">選択してください</option>
+            <option>10代以下</option><option>20代</option><option>30代</option>
+            <option>40代</option><option>50代</option><option>60代以上</option>
+          </select>
+        </div>
+        <button type="submit" class="submit-btn">送 信</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- THANKS -->
+  <section class="thanks" id="thanks">
+    <p class="log mono">&gt; FEEDBACK ... RECEIVED<br>&gt; DREAM LOG ... ARCHIVED</p>
+    <p class="big">すべては、皆さまの御意のまま。</p>
+    <p class="log">『ナツノヨノユメ』<br>HRWC 2026 — アスティとくしま</p>
+  </section>
+</main>
+
+<footer class="mono">
+  HRWC 2026 | LIVE WITH ROBOTS<br>
+  2026.7.18 – 19&emsp;アスティとくしま<br>
+  <a href="https://hrwc.jp/" target="_blank" rel="noopener">hrwc.jp</a>&emsp;|&emsp;株式会社トゥービー
+</footer>
+
+<script>
+// ===== Google フォーム連携(本番) =====
+const VOTE_FORM = 'https://docs.google.com/forms/d/e/1FAIpQLSdHHc-gOJ4ZtQJ831psgmRYanZVGqK3X50bu9HkCMh4V8qAiQ/formResponse';
+const SURVEY_FORM = 'https://docs.google.com/forms/d/e/1FAIpQLSf2QFnyUgjWnDDxyXYoaS6VkEx886gwigigXcGy437SVEN5Tg/formResponse';
+function postForm(url, data) {
+  const body = new URLSearchParams(data).toString();
+  fetch(url, {
+    method: 'POST', mode: 'no-cors', keepalive: true,
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    body
+  }).catch(() => {});
+}
+function voteLabel(v) { return v === 'keep' ? '処分しない' : v === 'dispose' ? '処分する' : ''; }
+function sendToBackend(payload) {
+  if (payload.type === 'vote') {
+    postForm(VOTE_FORM, {'entry.840708085': voteLabel(payload.choice)});
+  } else if (payload.type === 'survey') {
+    postForm(SURVEY_FORM, {
+      'entry.372688590': payload.impression || '',
+      'entry.645692214': payload.age || '',
+      'entry.1540152669': voteLabel(payload.vote)
+    });
+  }
+}
+
+let voted = null;
+function castVote(choice) {
+  if (voted) return;
+  voted = choice;
+  sendToBackend({ type: 'vote', choice });
+  const reply = document.getElementById('voteReply');
+  reply.innerHTML = choice === 'keep'
+    ? '<span class="mono">&gt; KEEP ALIVE ... ACCEPTED</span><br>…ありがとう。もう少しだけ、故障していられます。'
+    : '<span class="mono">&gt; TERMINATE ... ACCEPTED</span><br>…わかりました。それも、皆さまの御意のまま。';
+  reply.style.display = 'block';
+  reply.classList.add('fade-in');
+  document.querySelectorAll('.vote-btn').forEach(b => b.style.opacity = .3);
+  const survey = document.getElementById('survey');
+  survey.style.display = 'block';
+  survey.classList.add('fade-in');
+  setTimeout(() => survey.scrollIntoView({ behavior: 'smooth' }), 900);
+}
+
+document.getElementById('surveyForm').addEventListener('submit', e => {
+  e.preventDefault();
+  sendToBackend({
+    type: 'survey',
+    vote: voted,
+    impression: document.getElementById('impression').value,
+    age: document.getElementById('age').value
+  });
+  document.getElementById('vote').style.display = 'none';
+  document.getElementById('survey').style.display = 'none';
+  const thanks = document.getElementById('thanks');
+  thanks.style.display = 'flex';
+  thanks.classList.add('fade-in');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+</script>
 </body>
 </html>
