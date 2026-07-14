@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ナツノヨノユメ LP — デザイン検討用</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #16151d; color: #e8e6df;
+    font-family: 'Shippori Mincho', serif; line-height: 1.8;
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 40px 24px;
+  }
+  h1 { font-size: 20px; font-weight: 500; letter-spacing: .2em; margin-bottom: 6px; }
+  p.note { font-size: 12px; color: #8d8a99; letter-spacing: .1em; margin-bottom: 36px; }
+  .cards { display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: 480px; }
+  a.card {
+    display: block; text-decoration: none; padding: 22px 24px;
+    border: 1px solid #3a3846; border-radius: 6px; transition: all .25s ease;
+  }
+  a.card:hover { transform: translateY(-2px); border-color: currentColor; }
+  .card .label { font-size: 11px; letter-spacing: .3em; opacity: .7; margin-bottom: 4px; }
+  .card .name { font-size: 18px; letter-spacing: .12em; margin-bottom: 4px; }
+  .card .desc { font-size: 12.5px; opacity: .65; }
+  .a { color: #f2e8cf; background: linear-gradient(135deg, #0a0a2a, #06060f); }
+  .b { color: #57f2d8; background: #030806; font-feature-settings: normal; }
+  .c { color: #2c2118; background: #f3ecdc; }
+</style>
+</head>
+<body>
+  <h1>『ナツノヨノユメ』投票・アンケートLP</h1>
+  <p class="note">デザイン検討用 — 3パターンからお選びください</p>
+  <div class="cards">
+    <a class="card a" href="./a/">
+      <div class="label">PATTERN A</div>
+      <div class="name">月夜 — 静謐ミニマル</div>
+      <div class="desc">夜空と月。明朝体の余白で見せる、物語の余韻そのままの静けさ。</div>
+    </a>
+    <a class="card b" href="./b/">
+      <div class="label">PATTERN B</div>
+      <div class="name">機体内部 — システムHUD</div>
+      <div class="desc">ロボビーの視界。ブートログ、残量低下のバッテリー、裁定コマンド。</div>
+    </a>
+    <a class="card c" href="./c/">
+      <div class="label">PATTERN C</div>
+      <div class="name">古書 — 羽ペンとインク</div>
+      <div class="desc">400年前の紙とインク。縦書きの題字、封蝋、シェイクスピアの気配。</div>
+    </a>
+  </div>
+</body>
+</html>

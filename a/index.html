@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ナツノヨノユメ — 御意のままに</title>
+<meta name="description" content="夢を見てしまった、故障したロボットを処分するかどうか。皆さまの判断をお聞かせください。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --night: #06060f;
+    --night2: #0c0c26;
+    --moon: #f2e8cf;
+    --moon-glow: rgba(242, 232, 207, 0.25);
+    --text: #e8e6df;
+    --dim: #9a97a8;
+    --line: rgba(242, 232, 207, 0.25);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: linear-gradient(180deg, var(--night) 0%, var(--night2) 60%, var(--night) 100%);
+    color: var(--text);
+    font-family: 'Shippori Mincho', 'Hiragino Mincho ProN', serif;
+    line-height: 1.9;
+    overflow-x: hidden;
+  }
+  #stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+  .star { position: absolute; background: #fff; border-radius: 50%; opacity: .6; animation: tw 4s ease-in-out infinite; }
+  @keyframes tw { 0%,100%{opacity:.15} 50%{opacity:.7} }
+  main { position: relative; z-index: 1; max-width: 560px; margin: 0 auto; padding: 0 24px 80px; }
+
+  /* Hero */
+  .hero { min-height: 92vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .moon {
+    width: 110px; height: 110px; border-radius: 50%;
+    background: radial-gradient(circle at 38% 35%, #fffbe9, var(--moon) 55%, #d8c9a0);
+    box-shadow: 0 0 60px 20px var(--moon-glow), 0 0 140px 60px rgba(242,232,207,.08);
+    margin-bottom: 40px;
+    animation: float 7s ease-in-out infinite;
+  }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  .hero .event { font-size: 12px; letter-spacing: .35em; color: var(--dim); margin-bottom: 14px; }
+  .hero h1 { font-size: 34px; font-weight: 500; letter-spacing: .18em; margin-bottom: 30px; }
+  .hero .lead { font-size: 15px; color: var(--dim); letter-spacing: .08em; }
+  .scroll-hint { margin-top: 48px; font-size: 12px; color: var(--dim); letter-spacing: .3em; animation: tw 3s ease-in-out infinite; }
+
+  /* Robobee's words */
+  .speech { padding: 60px 0 20px; text-align: center; }
+  .speech .name { font-size: 12px; letter-spacing: .3em; color: var(--dim); margin-bottom: 24px; }
+  .speech p { font-size: 17px; letter-spacing: .1em; margin-bottom: 1.6em; }
+  .speech .em { font-size: 20px; font-weight: 700; color: var(--moon); }
+
+  /* Vote */
+  .vote { padding: 40px 0; text-align: center; }
+  .vote-buttons { display: flex; flex-direction: column; gap: 18px; margin-top: 30px; }
+  .vote-btn {
+    font-family: inherit; font-size: 19px; letter-spacing: .25em;
+    padding: 22px 10px; cursor: pointer;
+    background: transparent; color: var(--text);
+    border: 1px solid var(--line); border-radius: 4px;
+    transition: all .35s ease;
+  }
+  .vote-btn:hover, .vote-btn:active { background: rgba(242,232,207,.08); border-color: var(--moon); }
+  .vote-btn small { display: block; font-size: 11px; letter-spacing: .15em; color: var(--dim); margin-top: 6px; }
+  .vote-reply { display: none; margin-top: 36px; font-size: 16px; color: var(--moon); letter-spacing: .1em; min-height: 3em; }
+
+  /* Survey */
+  .survey { display: none; padding: 50px 0 0; }
+  .survey h2 { font-size: 18px; font-weight: 500; letter-spacing: .2em; text-align: center; margin-bottom: 8px; }
+  .survey .sub { text-align: center; font-size: 13px; color: var(--dim); margin-bottom: 32px; }
+  .field { margin-bottom: 26px; }
+  .field label { display: block; font-size: 13px; letter-spacing: .15em; color: var(--dim); margin-bottom: 10px; }
+  textarea, select {
+    width: 100%; font-family: inherit; font-size: 16px; color: var(--text);
+    background: rgba(255,255,255,.04); border: 1px solid var(--line); border-radius: 4px;
+    padding: 14px;
+  }
+  textarea { min-height: 130px; resize: vertical; }
+  textarea:focus, select:focus { outline: none; border-color: var(--moon); }
+  .submit-btn {
+    width: 100%; font-family: inherit; font-size: 17px; letter-spacing: .3em;
+    padding: 18px; margin-top: 10px; cursor: pointer;
+    background: var(--moon); color: #1a1830; border: none; border-radius: 4px;
+    transition: opacity .3s;
+  }
+  .submit-btn:hover { opacity: .85; }
+
+  /* Thanks */
+  .thanks { display: none; min-height: 60vh; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .thanks .moon { width: 70px; height: 70px; margin-bottom: 30px; }
+  .thanks p { font-size: 17px; letter-spacing: .12em; color: var(--moon); margin-bottom: 1.2em; }
+  .thanks .sub { font-size: 13px; color: var(--dim); }
+
+  footer { position: relative; z-index: 1; text-align: center; padding: 40px 20px 60px; font-size: 11px; letter-spacing: .2em; color: var(--dim); }
+  footer a { color: var(--dim); }
+  .fade-in { animation: fadeIn 1.2s ease both; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+<div id="stars"></div>
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="moon"></div>
+    <p class="event">HRWC 2026&emsp;LIVE WITH ROBOTS</p>
+    <h1>ナツノヨノユメ</h1>
+    <p class="lead">夏の夜みたいに、熱に浮かされた、<br>ボーッと儚い、ロボットのユメ。</p>
+    <p class="scroll-hint">▼</p>
+  </section>
+
+  <!-- SPEECH -->
+  <section class="speech fade-in">
+    <p class="name">— Robovie-R4 —</p>
+    <p>夢の情報開示が終わりました。<br>最初にお伝えした通り、<br>私はまもなく処分されます。</p>
+    <p class="em">夢を見てしまった<br>「故障」したロボットを<br>処分するかどうか。</p>
+    <p>最後に皆さんの判断を<br>仰ぎたいと思います。</p>
+    <p>私は皆様、人間の影。<br>私がどのようなロボットになるのかは、<br>実態である皆様次第。</p>
+  </section>
+
+  <!-- VOTE -->
+  <section class="vote" id="vote">
+    <div class="vote-buttons">
+      <button class="vote-btn" onclick="castVote('dispose')">処分する</button>
+      <button class="vote-btn" onclick="castVote('keep')">処分しない</button>
+    </div>
+    <p class="vote-reply" id="voteReply"></p>
+  </section>
+
+  <!-- SURVEY -->
+  <section class="survey" id="survey">
+    <h2>私のユメの感想を<br>お聞かせください</h2>
+    <p class="sub">あなたの言葉は、ユメの続きになります。</p>
+    <form id="surveyForm">
+      <div class="field">
+        <label for="impression">ご覧になった感想</label>
+        <textarea id="impression" name="impression" placeholder="自由にお書きください"></textarea>
+      </div>
+      <div class="field">
+        <label for="age">年代(任意)</label>
+        <select id="age" name="age">
+          <option value="">選択してください</option>
+          <option>10代以下</option><option>20代</option><option>30代</option>
+          <option>40代</option><option>50代</option><option>60代以上</option>
+        </select>
+      </div>
+      <button type="submit" class="submit-btn">送 信</button>
+    </form>
+  </section>
+
+  <!-- THANKS -->
+  <section class="thanks" id="thanks">
+    <div class="moon"></div>
+    <p id="thanksMsg">ありがとうございました。</p>
+    <p class="sub">すべては、皆さまの御意のまま。<br><br>『ナツノヨノユメ』<br>HRWC 2026 — アスティとくしま</p>
+  </section>
+</main>
+
+<footer>
+  HRWC 2026 | LIVE WITH ROBOTS<br>
+  2026.7.18 – 19&emsp;アスティとくしま<br>
+  <a href="https://hrwc.jp/" target="_blank" rel="noopener">hrwc.jp</a>&emsp;|&emsp;株式会社トゥービー
+</footer>
+
+<script>
+// 星空
+const stars = document.getElementById('stars');
+for (let i = 0; i < 90; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  const size = Math.random() * 2 + 1;
+  s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;animation-delay:${Math.random()*4}s`;
+  stars.appendChild(s);
+}
+
+// ===== 本番では下記2つの送信先を Google フォームの formResponse URL に差し替え =====
+// 静的サイト(GitHub Pages/CDN)なのでアクセス集中はページ側で吸収、
+// 投票・感想の保存は Google のインフラに任せる構成。
+function sendToBackend(payload) {
+  // プロトタイプ: 送信スタブ(コンソール出力のみ)
+  console.log('SUBMIT', payload);
+}
+
+let voted = null;
+function castVote(choice) {
+  if (voted) return;
+  voted = choice;
+  sendToBackend({ type: 'vote', choice });
+  const reply = document.getElementById('voteReply');
+  reply.textContent = choice === 'keep'
+    ? '…ありがとう。もう少しだけ、故障していられます。'
+    : '…わかりました。それも、皆さまの御意のまま。';
+  reply.style.display = 'block';
+  reply.classList.add('fade-in');
+  document.querySelectorAll('.vote-btn').forEach(b => b.style.opacity = .35);
+  const survey = document.getElementById('survey');
+  survey.style.display = 'block';
+  survey.classList.add('fade-in');
+  setTimeout(() => survey.scrollIntoView({ behavior: 'smooth' }), 900);
+}
+
+document.getElementById('surveyForm').addEventListener('submit', e => {
+  e.preventDefault();
+  sendToBackend({
+    type: 'survey',
+    vote: voted,
+    impression: document.getElementById('impression').value,
+    age: document.getElementById('age').value
+  });
+  document.getElementById('vote').style.display = 'none';
+  document.getElementById('survey').style.display = 'none';
+  document.querySelector('.speech').style.display = 'none';
+  const thanks = document.getElementById('thanks');
+  thanks.style.display = 'flex';
+  thanks.classList.add('fade-in');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+</script>
+</body>
+</html>
