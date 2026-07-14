@@ -125,37 +125,22 @@
     96% { transform: translateX(-2px) skewX(2deg); }
     98% { transform: none; opacity: .9; }
   }
-  /* Contact */
-  .contact { margin-top: 56px; text-align: center; }
-  .contact .panel { padding: 30px 22px; }
-  .contact p { font-size: 14.5px; letter-spacing: .08em; margin-bottom: 18px; }
-  .contact-btn {
-    display: block; text-decoration: none; text-align: center;
-    font-size: 16px; font-weight: 700; letter-spacing: .18em;
-    padding: 16px 10px; border-radius: 6px;
-    border: 2px solid var(--amber); color: var(--amber);
-    background: rgba(255,180,84,.08);
-    box-shadow: 0 0 14px rgba(255,180,84,.18);
-    transition: all .25s ease;
+  /* Contact / Support(脇役: 控えめなゴーストスタイル) */
+  .contact, .support { margin-top: 34px; text-align: center; }
+  .support { display: none; }
+  .contact p, .support p { font-size: 13px; color: var(--dim); letter-spacing: .06em; margin-bottom: 12px; }
+  .contact-btn, .support-btn {
+    display: inline-block; text-decoration: none; text-align: center;
+    font-size: 13.5px; font-weight: 500; letter-spacing: .12em;
+    padding: 10px 26px; border-radius: 4px;
+    border: 1px solid var(--line); color: var(--dim);
+    background: transparent; transition: all .25s ease;
   }
-  .contact-btn:hover, .contact-btn:active { background: rgba(255,180,84,.18); box-shadow: 0 0 24px rgba(255,180,84,.35); }
-  .contact-btn small { display: block; font-size: 12px; font-weight: 400; letter-spacing: .08em; opacity: .85; margin-top: 4px; text-transform: none; }
-
-  /* Support */
-  .support { display: none; margin-top: 40px; text-align: center; }
-  .support .panel { padding: 30px 22px; border-color: rgba(255,180,84,.4); }
-  .support .tag { color: var(--amber); }
-  .support p { font-size: 14.5px; letter-spacing: .08em; margin-bottom: 18px; }
-  .support-btn {
-    display: block; text-decoration: none; text-align: center;
-    font-size: 17px; font-weight: 700; letter-spacing: .18em;
-    padding: 18px 10px; border-radius: 6px;
-    background: var(--amber); color: #2a1a04; border: none;
-    box-shadow: 0 0 18px rgba(255,180,84,.35);
-    transition: all .25s ease;
-  }
-  .support-btn:hover, .support-btn:active { box-shadow: 0 0 28px rgba(255,180,84,.55); transform: translateY(-1px); }
-  .support-btn small { display: block; font-size: 11px; font-weight: 500; letter-spacing: .1em; opacity: .8; margin-top: 3px; }
+  .support-btn { border-color: rgba(255,180,84,.4); color: rgba(255,180,84,.75); }
+  .contact-btn:hover, .contact-btn:active { color: var(--text); border-color: var(--cyan); }
+  .support-btn:hover, .support-btn:active { color: var(--amber); border-color: var(--amber); }
+  .contact-btn small, .support-btn small { display: block; font-size: 11px; font-weight: 400; letter-spacing: .06em; opacity: .8; margin-top: 2px; text-transform: none; }
+  .sub-rule { width: 60px; height: 1px; background: var(--line); margin: 56px auto 0; }
 
   footer { position: relative; z-index: 1; text-align: center; padding: 40px 20px 60px; font-size: 11px; letter-spacing: .15em; color: var(--dim); }
   footer a { color: var(--dim); }
@@ -236,22 +221,18 @@
     <p class="log">『ナツノヨノユメ』<br>HRWC 2026 — アスティとくしま</p>
   </section>
 
+  <div class="sub-rule"></div>
+
   <!-- SUPPORT -->
   <section class="support" id="support">
-    <div class="panel">
-      <span class="tag mono">SUPPORT</span>
-      <p>ロボットと人間がともに立つ舞台を、<br>これからも。チームへの応援はこちらから</p>
-      <a class="support-btn" id="supportBtn" href="#" target="_blank" rel="noopener">このチームを応援する<small>Stripeで安全に決済されます</small></a>
-    </div>
+    <p>ロボットと人間がともに立つ舞台を、これからも。</p>
+    <a class="support-btn" id="supportBtn" href="#" target="_blank" rel="noopener">このチームを応援する</a>
   </section>
 
   <!-- CONTACT -->
   <section class="contact">
-    <div class="panel">
-      <span class="tag mono">CONTACT</span>
-      <p>シェイクスピア、ロボット、演劇——<br>エンタメに関するお問い合わせ・ご相談はこちら</p>
-      <a class="contact-btn" href="mailto:info@tobe-tokyo.com?subject=%E3%80%8E%E3%83%8A%E3%83%84%E3%83%8E%E3%83%A8%E3%83%8E%E3%83%A6%E3%83%A1%E3%80%8F%E3%82%92%E8%A6%8B%E3%81%A6%EF%BC%88%E3%81%8A%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%EF%BC%89">メールで問い合わせる<small>info@tobe-tokyo.com</small></a>
-    </div>
+    <p>シェイクスピア、ロボット、演劇——<br>エンタメに関するお問い合わせ・ご相談</p>
+    <a class="contact-btn" href="mailto:info@tobe-tokyo.com?subject=%E3%80%8E%E3%83%8A%E3%83%84%E3%83%8E%E3%83%A8%E3%83%8E%E3%83%A6%E3%83%A1%E3%80%8F%E3%82%92%E8%A6%8B%E3%81%A6%EF%BC%88%E3%81%8A%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%EF%BC%89">メールで問い合わせる<small>info@tobe-tokyo.com</small></a>
   </section>
 </main>
 
