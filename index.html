@@ -274,10 +274,24 @@ function sendToBackend(payload) {
   }
 }
 
+// 端末単位の再投票ロック(リロード対策)
+const VOTED_KEY = 'natsuyume_voted';
 let voted = null;
+try { voted = localStorage.getItem(VOTED_KEY) || null; } catch (e) {}
+if (voted) {
+  // 投票済み端末: ボタンを無効化し、アンケートは開放
+  window.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.vote-btn').forEach(b => { b.style.opacity = .3; b.disabled = true; });
+    const reply = document.getElementById('voteReply');
+    reply.textContent = 'この端末からの投票は受付済みです。ご協力ありがとうございました。';
+    reply.style.display = 'block';
+    document.getElementById('survey').style.display = 'block';
+  });
+}
 function castVote(choice) {
   if (voted) return;
   voted = choice;
+  try { localStorage.setItem(VOTED_KEY, choice); } catch (e) {}
   sendToBackend({ type: 'vote', choice });
   const reply = document.getElementById('voteReply');
   reply.innerHTML = choice === 'keep'
