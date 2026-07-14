@@ -144,12 +144,15 @@
   .thanks { display: none; min-height: 70vh; flex-direction: column; justify-content: center; text-align: center; }
   .thanks .big { font-size: 17px; color: var(--cyan); margin: 18px 0; }
   .thanks .log { font-size: 12px; color: var(--dim); }
-  .glitch { animation: glitch 2.4s steps(2) infinite; }
+  .glitch { animation: glitch 1.6s steps(2) infinite; }
   @keyframes glitch {
-    0%, 92%, 100% { transform: none; opacity: 1; }
-    94% { transform: translateX(2px); opacity: .8; }
-    96% { transform: translateX(-2px) skewX(2deg); }
-    98% { transform: none; opacity: .9; }
+    0%, 82%, 100% { transform: none; opacity: 1; }
+    84% { transform: translateX(2px); opacity: .8; }
+    86% { transform: translateX(-2px) skewX(2deg); }
+    88% { transform: none; opacity: .95; }
+    92% { transform: translateX(-1.5px) skewX(-1.5deg); opacity: .85; }
+    94% { transform: translateX(1.5px); }
+    96% { transform: none; opacity: .9; }
   }
   /* Contact / Support(脇役: 控えめなゴーストスタイル) */
   .contact, .support { margin-top: 34px; text-align: center; }
