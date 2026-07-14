@@ -49,8 +49,8 @@
   }
   .hero h1 {
     writing-mode: vertical-rl; margin: 0 auto;
-    font-size: 42px; font-weight: 800; letter-spacing: .28em; line-height: 1;
-    height: 300px;
+    font-size: clamp(26px, 9vw, 42px); font-weight: 800; letter-spacing: .28em; line-height: 1;
+    height: calc(7 * 1.28em); /* 7文字×(1em+字間.28em) */
   }
   .hero .lead { font-size: 14px; color: var(--ink-soft); letter-spacing: .1em; margin-top: 30px; }
   .feather { width: 46px; margin: 26px auto 0; display: block; opacity: .8; }
