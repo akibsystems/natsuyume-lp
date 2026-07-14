@@ -276,7 +276,7 @@ function postForm(url, data) {
 function voteLabel(v) { return v === 'keep' ? '処分しない' : v === 'dispose' ? '処分する' : ''; }
 
 // ===== 応援募金(Stripe Payment Link)。URLを設定すると表示される =====
-const STRIPE_LINK = '';
+const STRIPE_LINK = 'https://donate.stripe.com/aFadRb1l61vZ5bn17z0x208';
 if (STRIPE_LINK) {
   document.getElementById('supportBtn').href = STRIPE_LINK;
   document.getElementById('support').style.display = 'block';
