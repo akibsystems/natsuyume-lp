@@ -62,7 +62,8 @@
     display: flex; flex-direction: column; gap: 6px; line-height: 1.3;
     cursor: pointer; -webkit-tap-highlight-color: transparent;
   }
-  .scroll-hint span { animation: cascade 2.2s ease-in-out infinite; }
+  .scroll-hint span:first-child { opacity: .75; }
+  .scroll-hint .auto-arrow { animation: cascade 2.2s ease-in-out infinite; }
   @keyframes cascade {
     0%, 55%, 100% { opacity: .22; }
     25% { opacity: 1; color: var(--cyan); }
@@ -325,7 +326,6 @@ function sendToBackend(payload) {
   const fill = () => {
     hint.querySelectorAll('.auto-arrow').forEach(el => el.remove());
     const label = hint.firstElementChild;
-    label.style.animationDelay = '0s';
     const heroBottom = hero.getBoundingClientRect().bottom + window.scrollY;
     const start = label.getBoundingClientRect().bottom + window.scrollY;
     const step = 26; // ▼1個ぶんの高さ+間隔
