@@ -151,7 +151,7 @@
   .submit-btn:hover { opacity: .85; }
 
   /* Thanks */
-  .thanks { display: none; min-height: 70vh; flex-direction: column; justify-content: center; text-align: center; }
+  .thanks { display: none; min-height: 86vh; flex-direction: column; justify-content: center; text-align: center; }
   .thanks .big { font-size: 17px; color: var(--cyan); margin: 18px 0; }
   .thanks .log { font-size: 12px; color: var(--dim); }
   .glitch { animation: glitch 1.6s steps(2) infinite; }
@@ -432,10 +432,13 @@ document.getElementById('surveyForm').addEventListener('submit', e => {
   });
   document.getElementById('vote').style.display = 'none';
   document.getElementById('survey').style.display = 'none';
+  document.querySelector('.hero').style.display = 'none';
+  const speechSection = document.querySelector('.speech');
+  if (speechSection) (speechSection.closest('section') || speechSection).style.display = 'none';
   const thanks = document.getElementById('thanks');
   thanks.style.display = 'flex';
   thanks.classList.add('fade-in');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo(0, 0);
 });
 </script>
 </body>
