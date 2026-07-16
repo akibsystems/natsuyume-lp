@@ -185,6 +185,20 @@
   .contact-btn small, .support-btn small { display: block; font-size: 11px; font-weight: 400; letter-spacing: .06em; opacity: .8; margin-top: 2px; text-transform: none; }
   .sub-rule { width: 60px; height: 1px; background: var(--line); margin: 56px auto 0; }
 
+  /* Next Stage(ロミジュリ告知) */
+  .next-stage { display: none; margin-top: 44px; text-align: center; }
+  .next-stage .ns-tag { font-size: 12px; letter-spacing: .3em; color: var(--cyan); margin-bottom: 12px; }
+  .next-stage p.ns-body { font-size: 14px; color: #a9c3bc; letter-spacing: .06em; margin-bottom: 6px; }
+  .next-stage p.ns-note { font-size: 13px; color: var(--amber); letter-spacing: .08em; margin-bottom: 14px; }
+  .next-stage a {
+    display: inline-block; text-decoration: none;
+    font-size: 14.5px; font-weight: 700; letter-spacing: .12em;
+    padding: 13px 32px; border-radius: 5px;
+    border: 1px solid rgba(87,242,216,.45); color: #9fd8cc;
+    background: rgba(87,242,216,.05); transition: all .25s ease;
+  }
+  .next-stage a:hover, .next-stage a:active { color: var(--cyan); border-color: var(--cyan); }
+
   footer { position: relative; z-index: 1; text-align: center; padding: 40px 20px 60px; font-size: 11px; letter-spacing: .15em; color: var(--dim); }
   footer a { color: var(--dim); }
   .fade-in { animation: fadeIn .9s ease both; }
@@ -302,6 +316,14 @@
     <p>シェイクスピア、ロボット、演劇——<br>エンタメに関するお問い合わせ・ご相談</p>
     <a class="contact-btn" href="mailto:info@tobe-tokyo.com?subject=%E3%80%8E%E3%83%8A%E3%83%84%E3%83%8E%E3%83%A8%E3%83%8E%E3%83%A6%E3%83%A1%E3%80%8F%E3%82%92%E8%A6%8B%E3%81%A6%EF%BC%88%E3%81%8A%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%EF%BC%89">メールで問い合わせる<small>info@tobe-tokyo.com</small></a>
   </section>
+
+  <!-- NEXT STAGE(ロミジュリ告知・期間限定表示) -->
+  <section class="next-stage" id="nextStage">
+    <p class="ns-tag mono">&gt;&gt; NEXT STAGE <span class="blink">▊</span></p>
+    <p class="ns-body">7/19(日)、ここアスティとくしまで<br>カクシンハン『カジュアルなロミオとジュリエット』上演。</p>
+    <p class="ns-note">入場無料(投げ銭制)でご覧いただけます</p>
+    <a href="https://peatix.com/event/5072716" target="_blank" rel="noopener">詳細を見る — Peatix</a>
+  </section>
 </main>
 
 <footer class="mono">
@@ -323,6 +345,12 @@ function postForm(url, data) {
   }).catch(() => {});
 }
 function voteLabel(v) { return v === 'keep' ? '処分しない' : v === 'dispose' ? '処分する' : ''; }
+
+// ===== ロミジュリ告知: 7/19(日)の終わりまで表示 =====
+(() => {
+  const until = new Date('2026-07-19T23:59:59+09:00');
+  if (new Date() <= until) document.getElementById('nextStage').style.display = 'block';
+})();
 
 // ===== 応援募金(Stripe Payment Link)。URLを設定すると表示される =====
 const STRIPE_LINK = 'https://donate.stripe.com/aFadRb1l61vZ5bn17z0x208';
