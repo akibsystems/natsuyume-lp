@@ -154,6 +154,20 @@
   .thanks { display: none; min-height: 86vh; flex-direction: column; justify-content: center; text-align: center; }
   .thanks .big { font-size: 17px; color: var(--cyan); margin: 18px 0; }
   .thanks .log { font-size: 12px; color: var(--dim); }
+  .thanks .follow { margin-top: 38px; }
+  .follow-note { font-size: 14px; color: #a9c3bc; letter-spacing: .08em; margin: 10px 0 16px; }
+  .follow-btn {
+    display: inline-block; text-decoration: none; text-align: center;
+    font-size: 16px; font-weight: 700; letter-spacing: .1em;
+    padding: 15px 34px; border-radius: 6px;
+    border: 2px solid var(--cyan); color: var(--cyan);
+    background: rgba(87,242,216,.08);
+    box-shadow: 0 0 16px rgba(87,242,216,.25);
+    animation: pulse-c 2.8s ease-in-out infinite;
+    transition: all .25s ease;
+  }
+  .follow-btn:hover, .follow-btn:active { background: rgba(87,242,216,.18); }
+  .follow-btn small { display: block; font-size: 12px; font-weight: 400; letter-spacing: .12em; opacity: .8; margin-top: 3px; }
   .glitch { animation: glitch 1.6s steps(2) infinite; }
   @keyframes glitch {
     0%, 82%, 100% { transform: none; opacity: 1; }
@@ -316,6 +330,13 @@
     <p class="log mono">&gt; FEEDBACK ... RECEIVED<br>&gt; DREAM LOG ... ARCHIVED</p>
     <p class="big">すべては、皆さまの御意のまま。</p>
     <p class="log">『ナツノヨノユメ』<br>HRWC 2026 — アスティとくしま</p>
+    <div class="follow">
+      <p class="log mono">&gt; NEXT TRANSMISSION ... <span class="blink">▊</span></p>
+      <p class="follow-note">このユメの続き、そして私たちの行方は——</p>
+      <a class="follow-btn" href="https://x.com/KAKUSHINHAN" target="_blank" rel="noopener">
+        X で カクシンハン をフォロー<small class="mono">@KAKUSHINHAN</small>
+      </a>
+    </div>
   </section>
 
   <div class="sub-rule"></div>
