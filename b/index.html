@@ -431,14 +431,14 @@ function sendToBackend(payload) {
 // 公演回ごとの投票ロック(1人1公演1票 — 回は自分で選択)
 const SHOWINGS = ['7/18(土) 10:45の回', '7/18(土) 15:45の回', '7/19(日) 15:30の回', '配信で視聴'];
 const showingSel = document.getElementById('voteShowing');
-// 最も近い回を自動選択(基準 = QR提示時刻 ≒ 終演5分前。上演60分)
-// ①7/18 10:45開演 → 基準11:40 / ②7/18 15:45開演 → 基準16:40 / ③7/19 15:30開演 → 基準16:25
+// 最も近い回を自動選択(基準 = 開演30分後)
+// ①7/18 10:45開演 → 基準11:15 / ②7/18 15:45開演 → 基準16:15 / ③7/19 15:30開演 → 基準16:00
 (function preselect() {
   try {
     const anchors = [
-      { label: SHOWINGS[0], t: new Date('2026-07-18T11:40:00+09:00') },
-      { label: SHOWINGS[1], t: new Date('2026-07-18T16:40:00+09:00') },
-      { label: SHOWINGS[2], t: new Date('2026-07-19T16:25:00+09:00') }
+      { label: SHOWINGS[0], t: new Date('2026-07-18T11:15:00+09:00') },
+      { label: SHOWINGS[1], t: new Date('2026-07-18T16:15:00+09:00') },
+      { label: SHOWINGS[2], t: new Date('2026-07-19T16:00:00+09:00') }
     ];
     const now = Date.now();
     // イベント期間(前日昼〜翌日昼)以外は自動選択しない
