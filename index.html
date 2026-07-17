@@ -431,14 +431,26 @@ function sendToBackend(payload) {
 // 公演回ごとの投票ロック(1人1公演1票 — 回は自分で選択)
 const SHOWINGS = ['7/18(土) 10:45の回', '7/18(土) 15:45の回', '7/19(日) 15:30の回', '配信で視聴'];
 const showingSel = document.getElementById('voteShowing');
-// 時刻から初期値を推定(あくまで初期値、変更可能)
+// 最も近い回を自動選択(基準 = QR提示時刻 ≒ 終演5分前。上演60分)
+// ①7/18 10:45開演 → 基準11:40 / ②7/18 15:45開演 → 基準16:40 / ③7/19 15:30開演 → 基準16:25
 (function preselect() {
   try {
-    const jst = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
-    if (jst.getFullYear() === 2026 && jst.getMonth() + 1 === 7) {
-      if (jst.getDate() === 18) showingSel.value = jst.getHours() < 14 ? SHOWINGS[0] : SHOWINGS[1];
-      else if (jst.getDate() === 19) showingSel.value = SHOWINGS[2];
+    const anchors = [
+      { label: SHOWINGS[0], t: new Date('2026-07-18T11:40:00+09:00') },
+      { label: SHOWINGS[1], t: new Date('2026-07-18T16:40:00+09:00') },
+      { label: SHOWINGS[2], t: new Date('2026-07-19T16:25:00+09:00') }
+    ];
+    const now = Date.now();
+    // イベント期間(前日昼〜翌日昼)以外は自動選択しない
+    const windowStart = new Date('2026-07-17T12:00:00+09:00').getTime();
+    const windowEnd = new Date('2026-07-20T12:00:00+09:00').getTime();
+    if (now < windowStart || now > windowEnd) return;
+    let best = null, bestD = Infinity;
+    for (const a of anchors) {
+      const d = Math.abs(now - a.t.getTime());
+      if (d < bestD) { bestD = d; best = a.label; }
     }
+    if (best) showingSel.value = best;
   } catch (e) {}
 })();
 function slotKey(showing) { return 'natsuyume_voted_r' + SHOWINGS.indexOf(showing); }
