@@ -242,6 +242,16 @@
   <section id="vote">
     <p class="judgment-head mono">— JUDGMENT REQUIRED —</p>
     <p class="judgment-sub"><span id="typeTarget"></span><span class="type-cursor blink">▊</span></p>
+    <div class="field vote-showing">
+      <label for="voteShowing">ご覧になった回</label>
+      <select id="voteShowing">
+        <option value="">選択してください</option>
+        <option>7/18(土) 10:45の回</option>
+        <option>7/18(土) 15:45の回</option>
+        <option>7/19(日) 15:30の回</option>
+        <option>配信で視聴</option>
+      </select>
+    </div>
     <div class="vote-buttons">
       <button class="vote-btn dispose" onclick="castVote('dispose')">処分する</button>
       <button class="vote-btn keep" onclick="castVote('keep')">処分しない</button>
@@ -360,7 +370,10 @@ if (STRIPE_LINK) {
 }
 function sendToBackend(payload) {
   if (payload.type === 'vote') {
-    postForm(VOTE_FORM, {'entry.840708085': voteLabel(payload.choice)});
+    postForm(VOTE_FORM, {
+      'entry.840708085': voteLabel(payload.choice),
+      'entry.1396609559': payload.showing || ''
+    });
   } else if (payload.type === 'survey') {
     postForm(SURVEY_FORM, {
       'entry.372688590': payload.impression || '',
@@ -415,35 +428,68 @@ function sendToBackend(payload) {
   io.observe(document.querySelector('.judgment-sub'));
 })();
 
-// 端末単位の再投票ロック(公演回ごとに1票 — 複数公演を見た人は回ごとに投票可)
-function voteSlot() {
+// 公演回ごとの投票ロック(1人1公演1票 — 回は自分で選択)
+const SHOWINGS = ['7/18(土) 10:45の回', '7/18(土) 15:45の回', '7/19(日) 15:30の回', '配信で視聴'];
+const showingSel = document.getElementById('voteShowing');
+// 時刻から初期値を推定(あくまで初期値、変更可能)
+(function preselect() {
   try {
     const jst = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
     if (jst.getFullYear() === 2026 && jst.getMonth() + 1 === 7) {
-      if (jst.getDate() === 18) return jst.getHours() < 14 ? 's1' : 's2'; // 10:45回 / 15:45回
-      if (jst.getDate() === 19) return 's3'; // 15:30回
+      if (jst.getDate() === 18) showingSel.value = jst.getHours() < 14 ? SHOWINGS[0] : SHOWINGS[1];
+      else if (jst.getDate() === 19) showingSel.value = SHOWINGS[2];
     }
   } catch (e) {}
-  return 'x'; // 公演日以外(配信・テスト等)
+})();
+function slotKey(showing) { return 'natsuyume_voted_r' + SHOWINGS.indexOf(showing); }
+function votedFor(showing) {
+  if (!showing) return null;
+  try { return localStorage.getItem(slotKey(showing)); } catch (e) { return null; }
 }
-const VOTED_KEY = 'natsuyume_voted_' + voteSlot();
-let voted = null;
-try { voted = localStorage.getItem(VOTED_KEY) || null; } catch (e) {}
-if (voted) {
-  // この公演回では投票済み: ボタンを無効化し、アンケートは開放
-  window.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.vote-btn').forEach(b => { b.style.opacity = .3; b.disabled = true; b.classList.add('voted-off'); });
-    const reply = document.getElementById('voteReply');
-    reply.textContent = 'この回の投票は受付済みです。別の回をご覧になった際は、またお越しください。';
+let voted = null; // 選択中の回で投票済みならその選択、未投票ならnull
+function refreshVoteState() {
+  const s = showingSel.value;
+  voted = votedFor(s);
+  const reply = document.getElementById('voteReply');
+  document.querySelectorAll('.vote-btn').forEach(b => {
+    b.disabled = !!voted;
+    b.style.opacity = voted ? .3 : '';
+    b.classList.toggle('voted-off', !!voted);
+  });
+  if (voted) {
+    reply.textContent = 'この回の投票は受付済みです。別の回をご覧になった場合は、回を選び直してください。';
     reply.style.display = 'block';
     document.getElementById('survey').style.display = 'block';
-  });
+  } else {
+    reply.textContent = '';
+    reply.style.display = 'none';
+  }
 }
+showingSel.addEventListener('change', () => {
+  // アンケート側の「ご覧になった回」にも同期
+  const sv = document.getElementById('showing');
+  if (sv && showingSel.value) sv.value = showingSel.value;
+  showingSel.style.borderColor = '';
+  refreshVoteState();
+});
+window.addEventListener('DOMContentLoaded', refreshVoteState);
+
 function castVote(choice) {
-  if (voted) return;
+  const s = showingSel.value;
+  if (!s) {
+    const reply = document.getElementById('voteReply');
+    reply.textContent = '先に「ご覧になった回」を選んでください。';
+    reply.style.display = 'block';
+    showingSel.style.borderColor = 'var(--amber)';
+    showingSel.focus();
+    return;
+  }
+  if (votedFor(s)) return;
   voted = choice;
-  try { localStorage.setItem(VOTED_KEY, choice); } catch (e) {}
-  sendToBackend({ type: 'vote', choice });
+  try { localStorage.setItem(slotKey(s), choice); } catch (e) {}
+  const sv = document.getElementById('showing');
+  if (sv) sv.value = s;
+  sendToBackend({ type: 'vote', choice, showing: s });
   const reply = document.getElementById('voteReply');
   reply.innerHTML = choice === 'keep'
     ? '<span class="mono">&gt; KEEP ALIVE ... ACCEPTED</span><br>…ありがとう。もう少しだけ、故障していられます。'
