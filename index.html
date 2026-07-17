@@ -415,16 +415,26 @@ function sendToBackend(payload) {
   io.observe(document.querySelector('.judgment-sub'));
 })();
 
-// 端末単位の再投票ロック(リロード対策)
-const VOTED_KEY = 'natsuyume_voted';
+// 端末単位の再投票ロック(公演回ごとに1票 — 複数公演を見た人は回ごとに投票可)
+function voteSlot() {
+  try {
+    const jst = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
+    if (jst.getFullYear() === 2026 && jst.getMonth() + 1 === 7) {
+      if (jst.getDate() === 18) return jst.getHours() < 14 ? 's1' : 's2'; // 10:45回 / 15:45回
+      if (jst.getDate() === 19) return 's3'; // 15:30回
+    }
+  } catch (e) {}
+  return 'x'; // 公演日以外(配信・テスト等)
+}
+const VOTED_KEY = 'natsuyume_voted_' + voteSlot();
 let voted = null;
 try { voted = localStorage.getItem(VOTED_KEY) || null; } catch (e) {}
 if (voted) {
-  // 投票済み端末: ボタンを無効化し、アンケートは開放
+  // この公演回では投票済み: ボタンを無効化し、アンケートは開放
   window.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.vote-btn').forEach(b => { b.style.opacity = .3; b.disabled = true; b.classList.add('voted-off'); });
     const reply = document.getElementById('voteReply');
-    reply.textContent = 'この端末からの投票は受付済みです。ご協力ありがとうございました。';
+    reply.textContent = 'この回の投票は受付済みです。別の回をご覧になった際は、またお越しください。';
     reply.style.display = 'block';
     document.getElementById('survey').style.display = 'block';
   });
