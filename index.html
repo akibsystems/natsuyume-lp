@@ -249,7 +249,6 @@
         <option>7/18(土) 10:45の回</option>
         <option>7/18(土) 15:45の回</option>
         <option>7/19(日) 15:30の回</option>
-        <option>配信で視聴</option>
       </select>
     </div>
     <div class="vote-buttons">
@@ -273,6 +272,12 @@
             <option>7/18(土) 10:45の回</option>
             <option>7/18(土) 15:45の回</option>
             <option>7/19(日) 15:30の回</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="venue">観劇方法</label>
+          <select id="venue" name="venue">
+            <option selected>会場で観劇</option>
             <option>配信で視聴</option>
           </select>
         </div>
@@ -380,6 +385,7 @@ function sendToBackend(payload) {
       'entry.645692214': payload.age || '',
       'entry.2078883967': voteLabel(payload.vote),
       'entry.1540152669': payload.showing || '',
+      'entry.2066354122': payload.venue || '会場で観劇',
       'entry.1131328403': payload.nickname || '',
       'entry.1446081481': payload.consent || ''
     });
@@ -429,7 +435,7 @@ function sendToBackend(payload) {
 })();
 
 // 公演回ごとの投票ロック(1人1公演1票 — 回は自分で選択)
-const SHOWINGS = ['7/18(土) 10:45の回', '7/18(土) 15:45の回', '7/19(日) 15:30の回', '配信で視聴'];
+const SHOWINGS = ['7/18(土) 10:45の回', '7/18(土) 15:45の回', '7/19(日) 15:30の回'];
 const showingSel = document.getElementById('voteShowing');
 // 最も近い回を自動選択(基準 = 開演30分後)
 // ①7/18 10:45開演 → 基準11:15 / ②7/18 15:45開演 → 基準16:15 / ③7/19 15:30開演 → 基準16:00
@@ -523,6 +529,7 @@ document.getElementById('surveyForm').addEventListener('submit', e => {
     impression: document.getElementById('impression').value,
     age: document.getElementById('age').value,
     showing: document.getElementById('showing').value,
+    venue: document.getElementById('venue').value,
     nickname: document.getElementById('nickname').value,
     consent: document.getElementById('consent').value
   });
