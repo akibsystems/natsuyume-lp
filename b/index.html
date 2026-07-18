@@ -370,6 +370,29 @@
 </footer>
 
 <script>
+// ===== GA4(計測IDを設定すると有効化。空なら何も読み込まない) =====
+const GA_ID = '';
+if (GA_ID) {
+  const gs = document.createElement('script');
+  gs.async = true;
+  gs.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+  document.head.appendChild(gs);
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function () { dataLayer.push(arguments); };
+  gtag('js', new Date());
+  gtag('config', GA_ID);
+}
+function track(name, params) {
+  try { if (window.gtag) gtag('event', name, params || {}); } catch (e) {}
+}
+// 主要アクションのクリック計測
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('supportBtn')?.addEventListener('click', () => track('tip_click'));
+  document.querySelector('.follow-btn')?.addEventListener('click', () => track('x_follow_click'));
+  document.querySelector('.contact-btn')?.addEventListener('click', () => track('contact_click'));
+  document.querySelector('.next-stage a')?.addEventListener('click', () => track('nextstage_click'));
+});
+
 // ===== Google フォーム連携(本番) =====
 const VOTE_FORM = 'https://docs.google.com/forms/d/e/1FAIpQLSdHHc-gOJ4ZtQJ831psgmRYanZVGqK3X50bu9HkCMh4V8qAiQ/formResponse';
 const SURVEY_FORM = 'https://docs.google.com/forms/d/e/1FAIpQLSf2QFnyUgjWnDDxyXYoaS6VkEx886gwigigXcGy437SVEN5Tg/formResponse';
@@ -530,6 +553,7 @@ function castVote(choice) {
   const sv = document.getElementById('showing');
   if (sv) sv.value = s;
   sendToBackend({ type: 'vote', choice, showing: s });
+  track('vote_cast', { choice: voteLabel(choice), showing: s });
   const reply = document.getElementById('voteReply');
   reply.innerHTML = choice === 'keep'
     ? '<span class="mono">&gt; KEEP ALIVE ... ACCEPTED</span><br>…ありがとう。もう少しだけ、故障していられます。'
@@ -555,6 +579,7 @@ document.getElementById('surveyForm').addEventListener('submit', e => {
     nickname: document.getElementById('nickname').value,
     consent: document.getElementById('consent').value
   });
+  track('survey_submit');
   document.getElementById('vote').style.display = 'none';
   document.getElementById('survey').style.display = 'none';
   document.querySelector('.hero').style.display = 'none';
