@@ -539,6 +539,9 @@ function refreshVoteState() {
     reply.textContent = 'この回の投票は受付済みです。別の回をご覧になった場合は、回を選び直してください。';
     reply.style.display = 'block';
     document.getElementById('survey').style.display = 'block';
+    // アンケート側の回セレクトにも同期(再訪時の欠損防止)
+    const sv = document.getElementById('showing');
+    if (sv && s) sv.value = s;
   } else {
     reply.textContent = '';
     reply.style.display = 'none';
@@ -576,7 +579,7 @@ function castVote(choice) {
     : '<span class="mono">&gt; TERMINATE ... ACCEPTED</span><br>…わかりました。それも、皆さまの御意のまま。';
   reply.style.display = 'block';
   reply.classList.add('fade-in');
-  document.querySelectorAll('.vote-btn').forEach(b => { b.style.opacity = .3; b.classList.add('voted-off'); });
+  document.querySelectorAll('.vote-btn').forEach(b => { b.style.opacity = .3; b.disabled = true; b.classList.add('voted-off'); });
   const survey = document.getElementById('survey');
   survey.style.display = 'block';
   survey.classList.add('fade-in');
@@ -587,7 +590,7 @@ document.getElementById('surveyForm').addEventListener('submit', e => {
   e.preventDefault();
   sendToBackend({
     type: 'survey',
-    vote: voted,
+    vote: voted || votedFor(document.getElementById('showing').value),
     impression: document.getElementById('impression').value,
     age: document.getElementById('age').value,
     showing: document.getElementById('showing').value,
