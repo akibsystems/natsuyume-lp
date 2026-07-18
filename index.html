@@ -385,6 +385,20 @@ if (GA_ID) {
 function track(name, params) {
   try { if (window.gtag) gtag('event', name, params || {}); } catch (e) {}
 }
+
+// ===== 匿名連携ID(Stripe決済とアンケートの突合用。乱数のみで個人情報なし) =====
+function getUid() {
+  try {
+    let uid = localStorage.getItem('natsuyume_uid');
+    if (!uid) {
+      uid = 'rj-' + Array.from(crypto.getRandomValues(new Uint8Array(8)))
+        .map(b => b.toString(16).padStart(2, '0')).join('');
+      localStorage.setItem('natsuyume_uid', uid);
+    }
+    return uid;
+  } catch (e) { return ''; }
+}
+const UID = getUid();
 // 主要アクションのクリック計測
 window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('supportBtn')?.addEventListener('click', () => track('tip_click'));
@@ -415,7 +429,8 @@ function voteLabel(v) { return v === 'keep' ? '処分しない' : v === 'dispose
 // ===== 応援募金(Stripe Payment Link)。URLを設定すると表示される =====
 const STRIPE_LINK = 'https://donate.stripe.com/aFadRb1l61vZ5bn17z0x208';
 if (STRIPE_LINK) {
-  document.getElementById('supportBtn').href = STRIPE_LINK;
+  // client_reference_id で決済とアンケートを匿名IDで紐付け
+  document.getElementById('supportBtn').href = STRIPE_LINK + (UID ? '?client_reference_id=' + UID : '');
   document.getElementById('support').style.display = 'block';
 }
 function sendToBackend(payload) {
@@ -432,7 +447,8 @@ function sendToBackend(payload) {
       'entry.1540152669': payload.showing || '',
       'entry.2066354122': payload.venue || '会場で観劇',
       'entry.1131328403': payload.nickname || '',
-      'entry.1446081481': payload.consent || ''
+      'entry.1446081481': payload.consent || '',
+      'entry.1331050425': UID
     });
   }
 }
