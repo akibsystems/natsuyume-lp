@@ -200,6 +200,22 @@
   .contact-btn small, .support-btn small { display: block; font-size: 11px; font-weight: 400; letter-spacing: .06em; opacity: .8; margin-top: 2px; text-transform: none; }
   .sub-rule { width: 60px; height: 1px; background: var(--line); margin: 56px auto 0; }
 
+  /* X投稿促進 */
+  .xpost { margin-top: 40px; text-align: center; }
+  .xpost .xp-tag { font-size: 12px; letter-spacing: .3em; color: var(--cyan); margin-bottom: 10px; }
+  .xpost .xp-note { font-size: 14.5px; color: #cfe6e0; letter-spacing: .06em; margin-bottom: 8px; }
+  .xpost .xp-tags { font-size: 14px; color: var(--cyan); letter-spacing: .04em; margin-bottom: 16px; }
+  .xp-btn {
+    display: inline-block; text-decoration: none; text-align: center;
+    font-size: 15px; font-weight: 700; letter-spacing: .12em;
+    padding: 13px 32px; border-radius: 5px;
+    border: 1px solid rgba(87,242,216,.6); color: var(--cyan);
+    background: rgba(87,242,216,.08);
+    box-shadow: 0 0 12px rgba(87,242,216,.18);
+    transition: all .25s ease;
+  }
+  .xp-btn:hover, .xp-btn:active { background: rgba(87,242,216,.16); border-color: var(--cyan); }
+
   /* Next Stage(ロミジュリ告知) */
   .next-stage { display: none; margin-top: 44px; text-align: center; }
   .next-stage .ns-tag { font-size: 12px; letter-spacing: .3em; color: var(--cyan); margin-bottom: 12px; }
@@ -342,6 +358,14 @@
 
   <div class="sub-rule"></div>
 
+  <!-- X POST(感想のシェア促進) -->
+  <section class="xpost">
+    <p class="xp-tag mono">&gt;&gt; SHARE YOUR DREAM</p>
+    <p class="xp-note">ハッシュタグをつけて<br>感想の投稿をお待ちしております!</p>
+    <p class="xp-tags mono">#カクシンハン&ensp;#ナツユメ2026</p>
+    <a class="xp-btn" id="xpostBtn" href="https://x.com/intent/post?hashtags=%E3%82%AB%E3%82%AF%E3%82%B7%E3%83%B3%E3%83%8F%E3%83%B3,%E3%83%8A%E3%83%84%E3%83%A6%E3%83%A12026" target="_blank" rel="noopener">X で感想を投稿する</a>
+  </section>
+
   <!-- SUPPORT -->
   <section class="support" id="support">
     <p>ロボットと人間がともに立つ舞台を、これからも。</p>
@@ -405,6 +429,7 @@ window.addEventListener('DOMContentLoaded', () => {
   document.querySelector('.follow-btn')?.addEventListener('click', () => track('x_follow_click'));
   document.querySelector('.contact-btn')?.addEventListener('click', () => track('contact_click'));
   document.querySelector('.next-stage a')?.addEventListener('click', () => track('nextstage_click'));
+  document.getElementById('xpostBtn')?.addEventListener('click', () => track('xpost_click'));
 });
 
 // ===== Google フォーム連携(本番) =====
